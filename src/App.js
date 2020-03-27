@@ -1,24 +1,65 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
-function App() {
+function ToDo({ todo, index }) {
+  return <div className='todo'>{todo.text}</div>;
+}
+
+function ToDoForm({ addToDo }) {
+  const [value, setValue] = useState('');
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    if (!value) return;
+
+    addToDo(value);
+
+    setValue('');
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <form onSubmit={handleSubmit}>
+      <input
+        type='text'
+        className='input'
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        placeholder='Add ToDo Task...'
+      />
+    </form>
+  );
+}
+
+function App() {
+  const [todo, setToDo] = useState([
+    {
+      text: 'Learn about React...',
+      isComplete: false
+    },
+    {
+      text: 'Learn more about React...',
+      isComplete: false
+    },
+    {
+      text: 'Learn even more about React...',
+      isComplete: false
+    }
+  ]);
+
+  const addToDo = text => {
+    const newToDo = [...todo, { text }];
+    setToDo(newToDo);
+  };
+
+  return (
+    <div className='app'>
+      <div className='todo-list'>
+        {todo.map((item, index) => (
+          <ToDo key={index} index={index} todo={item} />
+        ))}
+        <ToDoForm addToDo={addToDo} />
+      </div>
     </div>
   );
 }
